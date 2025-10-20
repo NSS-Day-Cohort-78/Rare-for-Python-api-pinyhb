@@ -1,18 +1,19 @@
 """Main Server"""
 
 from http.server import HTTPServer
-from nss_handler import Handler, status
+import json
+from nss_handler import HandleRequests, status
 from views import get_posts
-from views import login_user
+from views import create_user, login_user
 
 
-class Json_Server(Handler):
+class Json_Server(HandleRequests):
     """GET, POST, PUT, DELETE"""
 
     def do_GET(self):
         """GET requests"""
 
-        response = self.parse(self.path)
+        response = self.parse_url(self.path)
         pk = response["pk"]
 
         if response["requested"] == "posts":
@@ -20,7 +21,28 @@ class Json_Server(Handler):
                 pass
             else:
                 request = get_posts()
-                self.response(request, status.HTTP_200_OK.value)
+                self.response(request, status.HTTP_200_SUCCESS.value)
+
+    def do_POST(self):
+        url = self.parse_url(self.path)
+        pk = ["pk"]
+
+        content_len = int(self.headers.get("content-length", 0))
+        request_body = self.rfile.read(content_len)
+        request_body = json.loads(request_body)
+
+        if url["requested_resource"] == "register":
+            if url["pk"] == 0:
+                successfully_added = create_user(request_body)
+                if successfully_added:
+                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "login":
+            response = login_user(request_body)
+            return self.response(response, status.HTTP_200_SUCCESS.value)
+        else:
+            return self.response(
+                "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            )
 
 
 def main():
