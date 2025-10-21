@@ -99,7 +99,7 @@ INSERT INTO Posts (
   content,
   approved
   ) VALUES (
-    4,
+    22,
     1,
     'Test',
     'today',
