@@ -90,6 +90,7 @@ def get_post_by_id(pk):
                 u.email,
                 u.bio,
                 u.id userId,
+                u.username,
                 c.id categoryId,
                 c.label 
             FROM Posts p
@@ -110,6 +111,7 @@ def get_post_by_id(pk):
             "last_name": response["last_name"],
             "email": response["email"],
             "bio": response["bio"],
+            "username": response["username"],
         }
 
         category = {"id": response["categoryId"], "label": response["label"]}
