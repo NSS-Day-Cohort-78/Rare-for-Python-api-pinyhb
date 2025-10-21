@@ -5,6 +5,7 @@ import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id
 from views import create_user, login_user
+from views import get_categories
 
 
 class Json_Server(HandleRequests):
@@ -22,6 +23,13 @@ class Json_Server(HandleRequests):
                 self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_posts()
+                self.response(request, status.HTTP_200_SUCCESS.value)
+
+        if response["requested_resource"] == "categories":
+            if pk > 0:
+                pass
+            else:
+                request = get_categories()
                 self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
