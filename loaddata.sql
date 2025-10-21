@@ -89,4 +89,23 @@ INSERT INTO Categories ('label') VALUES ('News');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 
-INSERT INTO Users ('username', 'password') VALUES ('tcastellon', '12345');
+INSERT INTO Users (first_name, last_name, email, bio, 'username', 'password') VALUES ('Thomas','c','c@email','bio','tcastellon', '12345');
+INSERT INTO Posts (
+  user_id,
+  category_id,
+  title,
+  publication_date,
+  image_url,
+  content,
+  approved
+  ) VALUES (
+    22,
+    1,
+    'Test',
+    'today',
+    'img',
+    'content',
+    true
+);
+
+DELETE FROM Posts;
