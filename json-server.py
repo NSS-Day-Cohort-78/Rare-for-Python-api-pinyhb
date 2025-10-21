@@ -5,13 +5,13 @@ from nss_handler import HandleRequests, status
 from views import create_user
 
 class JSONServer(HandleRequests):
-    def do_GET(self):
-        response_body = ""
-        url = self.parse_url(self.path)
+    # def do_GET(self):
+    #     response_body = ""
+    #     url = self.parse_url(self.path)
 
-        if url["requested_resource"] == "users":
-            response_body = list_users()
-            return self.response(response_body, status.HTTP_200_SUCCESS.value)
+    #     if url["requested_resource"] == "users":
+    #         response_body = list_users()
+    #         return self.response(response_body, status.HTTP_200_SUCCESS.value)
         
     def do_POST(self):
         """Handle POST requests from a client"""
@@ -29,7 +29,7 @@ class JSONServer(HandleRequests):
             new_id = create_user(request_body)
             if new_id:
                 return self.response(
-                    new_id, status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    new_id, status.HTTP_201_SUCCESS_CREATED.value
                 )
                 
         return self.response(
