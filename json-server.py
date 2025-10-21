@@ -3,7 +3,7 @@
 from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
-from views import get_posts
+from views import get_posts, get_post_by_id
 from views import create_user, login_user
 
 
@@ -18,7 +18,8 @@ class Json_Server(HandleRequests):
 
         if response["requested_resource"] == "posts":
             if pk > 0:
-                pass
+                request = get_post_by_id(pk)
+                self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_posts()
                 self.response(request, status.HTTP_200_SUCCESS.value)
@@ -34,9 +35,7 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "users":
             new_id = create_user(request_body)
             if new_id:
-                return self.response(
-                    new_id, status.HTTP_201_SUCCESS_CREATED.value
-                )
+                return self.response(new_id, status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "login":
             response = login_user(request_body)
             return self.response(response, status.HTTP_200_SUCCESS.value)
