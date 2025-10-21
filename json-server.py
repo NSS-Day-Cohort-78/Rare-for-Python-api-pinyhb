@@ -31,11 +31,12 @@ class Json_Server(HandleRequests):
         request_body = self.rfile.read(content_len)
         request_body = json.loads(request_body)
 
-        if url["requested_resource"] == "register":
-            if url["pk"] == 0:
-                successfully_added = create_user(request_body)
-                if successfully_added:
-                    return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        if url["requested_resource"] == "users":
+            new_id = create_user(request_body)
+            if new_id:
+                return self.response(
+                    new_id, status.HTTP_201_SUCCESS_CREATED.value
+                )
         elif url["requested_resource"] == "login":
             response = login_user(request_body)
             return self.response(response, status.HTTP_200_SUCCESS.value)
