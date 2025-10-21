@@ -90,3 +90,20 @@ INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 
 INSERT INTO Users ('username', 'password') VALUES ('tcastellon', '12345');
+INSERT INTO Posts (
+  user_id,
+  category_id,
+  title,
+  publication_date,
+  image_url,
+  content,
+  approved
+  ) VALUES (
+    2,
+    2,
+    'Test',
+    'today',
+    'img',
+    'content',
+    true
+)

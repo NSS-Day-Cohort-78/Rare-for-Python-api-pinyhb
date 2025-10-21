@@ -15,7 +15,21 @@ def get_posts():
 
         cursor.execute(
             """
-            SELECT * FROM Posts
+            SELECT
+                p.user_id,
+                p.category_id,
+                p.title,
+                p.publication_date,
+                p.image_url,
+                p.content,
+                p.approved,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.bio
+            FROM Posts p
+            JOIN Users u
+            ON u.id = p.user_id
             """
         )
         response = cursor.fetchall()

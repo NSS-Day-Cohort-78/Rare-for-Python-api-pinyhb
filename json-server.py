@@ -16,7 +16,7 @@ class Json_Server(HandleRequests):
         response = self.parse_url(self.path)
         pk = response["pk"]
 
-        if response["requested"] == "posts":
+        if response["requested_resource"] == "posts":
             if pk > 0:
                 pass
             else:
