@@ -89,7 +89,7 @@ INSERT INTO Categories ('label') VALUES ('News');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 
-INSERT INTO Users (first_name, last_name, email, bio, 'username', 'password') VALUES ('Thomas','c','c@email','bio','tcastellon', '12345');
+INSERT INTO Users (first_name, last_name, email, bio, 'username', 'password') VALUES ('JJ','Kale','Kale@email','bio','jj', 'kale');
 INSERT INTO Posts (
   user_id,
   category_id,
