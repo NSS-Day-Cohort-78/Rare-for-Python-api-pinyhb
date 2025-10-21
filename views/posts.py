@@ -16,6 +16,7 @@ def get_posts():
         cursor.execute(
             """
             SELECT
+                p.id postId,
                 p.user_id,
                 p.category_id,
                 p.title,
@@ -26,17 +27,42 @@ def get_posts():
                 u.first_name,
                 u.last_name,
                 u.email,
-                u.bio
+                u.bio,
+                u.id userId,
+                c.id categoryId,
+                c.label 
             FROM Posts p
             JOIN Users u
-            ON u.id = p.user_id
+            ON userId = p.user_id
+            JOIN Categories c
+            ON p.category_id = categoryId
             """
         )
         response = cursor.fetchall()
         posts = []
 
         for row in response:
-            posts.append(dict(row))
+            user = {
+                "id": row["userId"],
+                "first_name": row["first_name"],
+                "last_name": row["last_name"],
+                "email": row["email"],
+                "bio": row["bio"],
+            }
+
+            category = {"id": row["categoryId"], "label": row["label"]}
+
+            post = {
+                "id": row["postId"],
+                "category": category,
+                "title": row["title"],
+                "publication_date": row["publication_date"],
+                "image_url": row["image_url"],
+                "content": row["content"],
+                "approved": row["approved"],
+                "user": user,
+            }
+            posts.append(post)
 
         serialized_posts = json.dumps(posts)
     return serialized_posts
