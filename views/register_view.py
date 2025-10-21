@@ -1,6 +1,29 @@
 import sqlite3
 import json
 
+def list_users():
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            *
+        FROM Users
+        """)
+        query_results = db_cursor.fetchall()
+
+        # Initialize an empty list and then add each dictionary to it
+        users=[]
+        for row in query_results:
+            users.append(dict(row))
+
+        # Serialize Python list to JSON encoded string
+        serialized_users = json.dumps(users)
+
+    return serialized_users
+
 def register_user(user_data):
     with sqlite3.connect("./db.sqlite3") as conn:    
         # Query docks directly from the database

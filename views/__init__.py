@@ -1,1 +1,2 @@
-from .register_view import register_user
+
+from .user import create_user
