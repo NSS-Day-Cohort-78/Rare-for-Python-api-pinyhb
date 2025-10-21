@@ -33,12 +33,13 @@ def get_posts():
                 c.label 
             FROM Posts p
             JOIN Users u
-            ON userId = p.user_id
+            ON u.id = p.user_id
             JOIN Categories c
-            ON p.category_id = categoryId
+            ON p.category_id = c.id
             """
         )
         response = cursor.fetchall()
+
         posts = []
 
         for row in response:
