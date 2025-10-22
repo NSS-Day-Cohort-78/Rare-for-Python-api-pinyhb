@@ -129,3 +129,21 @@ def get_post_by_id(pk):
         serialized_post = json.dumps(post)
 
     return serialized_post
+
+
+def delete_post(pk):
+
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM Posts
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
