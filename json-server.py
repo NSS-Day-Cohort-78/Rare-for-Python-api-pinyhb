@@ -4,7 +4,7 @@ from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post
-from views import create_user, login_user, get_all_users
+from views import create_user, login_user, get_all_users, get_user
 from views import get_categories
 
 
@@ -34,7 +34,8 @@ class Json_Server(HandleRequests):
 
         if response["requested_resource"] == "users":
             if pk > 0:
-                pass
+                request = get_user(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_users()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -70,7 +71,7 @@ class Json_Server(HandleRequests):
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
-                
+
     def do_PUT(self):
         url = self.parse_url(self.path)
         pk = url["pk"]
@@ -93,12 +94,14 @@ class Json_Server(HandleRequests):
                         )
                     else:
                         return self.response(
-                            json.dumps({"error": "Post not found"}), status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
-                    )
+                            json.dumps({"error": "Post not found"}),
+                            status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                        )
                 except Exception as e:
                     return self.response(
-                        json.dumps({"error": str(e)}), status.HTTP_500_SERVER_ERROR.value
-                )
+                        json.dumps({"error": str(e)}),
+                        status.HTTP_500_SERVER_ERROR.value,
+                    )
 
 
 def main():
