@@ -4,7 +4,7 @@ from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post
-from views import create_user, login_user, get_all_users
+from views import create_user, login_user, get_all_users, get_user
 from views import get_categories
 
 
@@ -34,7 +34,8 @@ class Json_Server(HandleRequests):
 
         if response["requested_resource"] == "users":
             if pk > 0:
-                pass
+                request = get_user(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_users()
                 return self.response(request, status.HTTP_200_SUCCESS.value)

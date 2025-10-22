@@ -93,3 +93,25 @@ def get_all_users():
 
         serialized_users = json.dumps(users)
     return serialized_users
+
+
+def get_user(pk):
+
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Users
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+        response = cursor.fetchone()
+
+        user = json.dumps(dict(response))
+    return user
