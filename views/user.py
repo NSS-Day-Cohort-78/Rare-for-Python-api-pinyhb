@@ -81,6 +81,7 @@ def get_all_users():
             SELECT
                 *
             FROM Users
+            ORDER BY username
             """
         )
 
