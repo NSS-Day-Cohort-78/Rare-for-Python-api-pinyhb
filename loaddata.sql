@@ -109,3 +109,4 @@ INSERT INTO Posts (
 );
 
 DELETE FROM Posts;
+DELETE FROM Categories WHERE id=2
