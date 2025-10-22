@@ -36,6 +36,7 @@ def get_posts():
             ON userId = p.user_id
             JOIN Categories c
             ON p.category_id = categoryId
+            ORDER BY p.publication_date DESC
             """
         )
         response = cursor.fetchall()
