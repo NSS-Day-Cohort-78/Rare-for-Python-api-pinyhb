@@ -3,7 +3,7 @@
 from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
-from views import get_posts, get_post_by_id
+from views import get_posts, get_post_by_id, delete_post
 from views import create_user, login_user
 from views import get_categories
 
@@ -51,6 +51,18 @@ class Json_Server(HandleRequests):
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
             )
+
+    def do_DELETE(self):
+        url = self.parse_url(self.path)
+        pk = url["pk"]
+
+        if url["requested_resource"] == "posts":
+            if pk > 0:
+                response = delete_post(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
 
 
 def main():
