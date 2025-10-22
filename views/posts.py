@@ -33,13 +33,14 @@ def get_posts():
                 c.label 
             FROM Posts p
             JOIN Users u
-            ON userId = p.user_id
+            ON u.id = p.user_id
             JOIN Categories c
             ON p.category_id = categoryId
             ORDER BY p.publication_date DESC
             """
         )
         response = cursor.fetchall()
+
         posts = []
 
         for row in response:
@@ -148,3 +149,23 @@ def delete_post(pk):
         row_affected = cursor.rowcount
 
     return True if row_affected > 0 else False
+
+def update_post(pk, post_data):
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Posts
+                SET
+                    title = ?,
+                    category_id = ?,
+                    content = ?
+            WHERE id = ?
+            """,
+            (post_data['title'], post_data['category_id'], post_data['content'], pk)
+        )
+
+        rows_affected = cursor.rowcount
+
+    return True if rows_affected > 0 else False

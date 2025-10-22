@@ -3,7 +3,7 @@
 from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
-from views import get_posts, get_post_by_id, delete_post
+from views import get_posts, get_post_by_id, delete_post, update_post
 from views import create_user, login_user, get_all_users
 from views import get_categories
 
@@ -70,6 +70,35 @@ class Json_Server(HandleRequests):
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
+                
+    def do_PUT(self):
+        url = self.parse_url(self.path)
+        pk = url["pk"]
+
+        # Get the request body JSON for the new data
+        content_len = int(self.headers.get("content-length", 0))
+        request_body = self.rfile.read(content_len)
+        request_body = json.loads(request_body)
+
+        if url["requested_resource"] == "posts":
+            if pk != 0:
+                try:
+                    print("PK:", pk)
+                    print("Request body:", request_body)
+                    print("Keys in request_body:", request_body.keys())
+                    successfully_updated = update_post(pk, request_body)
+                    if successfully_updated:
+                        return self.response(
+                            "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                        )
+                    else:
+                        return self.response(
+                            json.dumps({"error": "Post not found"}), status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+                    )
+                except Exception as e:
+                    return self.response(
+                        json.dumps({"error": str(e)}), status.HTTP_500_SERVER_ERROR.value
+                )
 
 
 def main():
