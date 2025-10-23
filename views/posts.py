@@ -188,8 +188,11 @@ def create_post(post):
             post['content']
         ))
 
-        query_results = db_cursor.fetchone()
-        response = json.dumps(query_results)
+        new_post_id = db_cursor.lastrowid
+        response = json.dumps({
+            'id': new_post_id,
+            'success': True
+        })
 
     return response
 
