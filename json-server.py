@@ -5,7 +5,7 @@ import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post
 from views import create_user, login_user, get_all_users, get_user
-from views import get_categories
+from views import get_categories, create_category
 
 
 class Json_Server(HandleRequests):
@@ -42,7 +42,7 @@ class Json_Server(HandleRequests):
 
     def do_POST(self):
         url = self.parse_url(self.path)
-        pk = ["pk"]
+        pk = url["pk"]
 
         content_len = int(self.headers.get("content-length", 0))
         request_body = self.rfile.read(content_len)
@@ -55,6 +55,10 @@ class Json_Server(HandleRequests):
         elif url["requested_resource"] == "login":
             response = login_user(request_body)
             return self.response(response, status.HTTP_200_SUCCESS.value)
+        elif url["requested_resource"] == "categories":
+            response = create_category(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
