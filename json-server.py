@@ -155,18 +155,6 @@ class Json_Server(HandleRequests):
                     status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                 )
 
-        if url["requested_resource"] == "edit-category":
-            if pk != 0:
-                successfully_updated = update_category(pk, request_body)
-                if successfully_updated:
-                    return self.response(
-                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
-                    )
-                return self.response(
-                    json.dumps({"error": "Category not found"}),
-                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
-                )
-
 
 def main():
     """open the server"""
