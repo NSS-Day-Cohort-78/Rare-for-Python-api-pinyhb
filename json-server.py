@@ -6,7 +6,7 @@ from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post, create_post
 from views import create_user, login_user, get_all_users, get_user
 from views import get_categories, create_category, delete_category, get_category_by_id
-from views import get_all_comments
+from views import get_all_comments, create_comment
 
 
 class Json_Server(HandleRequests):
@@ -67,6 +67,10 @@ class Json_Server(HandleRequests):
             if url["pk"] == 0:
                 response = create_post(request_body)
                 return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "comments":
+            response = create_comment(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value

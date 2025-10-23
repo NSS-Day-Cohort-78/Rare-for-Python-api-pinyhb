@@ -6,4 +6,4 @@ from .categories import (
     delete_category,
     get_category_by_id,
 )
-from .comments import get_all_comments
+from .comments import get_all_comments, create_comment
