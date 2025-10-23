@@ -45,7 +45,7 @@ class Json_Server(HandleRequests):
             if pk > 0:
                 pass
             else:
-                request = get_all_comments()
+                request = get_all_comments(response)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
