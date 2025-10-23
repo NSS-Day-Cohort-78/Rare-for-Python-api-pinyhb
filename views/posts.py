@@ -2,6 +2,7 @@
 
 import sqlite3
 import json
+from datetime import datetime
 
 db = "db.sqlite3"
 
@@ -170,3 +171,46 @@ def update_post(pk, post_data):
         rows_affected = cursor.rowcount
 
     return True if rows_affected > 0 else False
+
+def create_post(post):
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (?, ?, ?, ?, ?, ?, 1)
+        """,(
+            post['user_id'],
+            post['category_id'],
+            post['title'],
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            post['image_url'],
+            post['content']
+        ))
+
+        new_post_id = db_cursor.lastrowid
+        response = json.dumps({
+            'id': new_post_id,
+            'success': True
+        })
+
+    return response
+
+def list_categories():
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT c.id, c.label FROM Categories c
+        """)
+
+        query_results = db_cursor.fetchall()
+
+        categories = []
+        for row in query_results:
+            categories.append(dict(row))
+
+        serialized_categories = json.dumps(categories)
+
+    return serialized_categories
