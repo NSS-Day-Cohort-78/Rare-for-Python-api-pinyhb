@@ -29,6 +29,26 @@ def get_categories():
         serialized = json.dumps(categories)
     return serialized
 
+def get_category_by_id(pk):
+    with sqlite3.connect(db) as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Categories c
+            WHERE c.id = ?
+            """,
+            (pk,),
+        )
+        query_results = cursor.fetchone()
+
+        serialized_category = json.dumps(dict(query_results))
+
+    return serialized_category
+
 
 def create_category(body):
     """create a new category"""
