@@ -42,7 +42,8 @@ def get_all_comments(request):
         comments = []
         for row in response:
             category = {"label": row["label"]}
-            author = {"username": row["username"]}
+            author = {"id": row["userId"], "username": row["username"]}
+
             post = {"title": row["title"]}
             comment = {
                 "id": row["commentId"],
@@ -73,3 +74,54 @@ def create_comment(body):
         row_added = cursor.rowcount
 
     return True if row_added > 0 else False
+
+
+def edit_comment(body, pk):
+    """edit a comment"""
+
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Comments
+            SET
+                id = ?,
+                post_id = ?,
+                author_id = ?,
+                content = ?
+                
+            WHERE id = ?
+            """,
+            (
+                pk,
+                body["post_id"],
+                body["author_id"],
+                body["content"],
+                pk,
+            ),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
+
+
+def get_comment_by_id(pk):
+    """get a single comment"""
+    with sqlite3.connect(db) as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT * FROM Comments
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+        response = cursor.fetchone()
+        serialized_response = json.dumps(dict(response))
+
+    return serialized_response
