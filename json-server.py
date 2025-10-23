@@ -78,6 +78,10 @@ class Json_Server(HandleRequests):
             response = create_comment(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "categories":
+            response = create_category(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
