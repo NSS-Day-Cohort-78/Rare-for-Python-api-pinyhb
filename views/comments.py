@@ -55,3 +55,21 @@ def get_all_comments(request):
 
         serialized_comments = json.dumps(comments)
     return serialized_comments
+
+
+def create_comment(body):
+    """create a comment"""
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO Comments (post_id, author_id, content)
+            VALUES (?, ?, ?)
+            """,
+            (body["post_id"], body["author_id"], body["content"]),
+        )
+
+        row_added = cursor.rowcount
+
+    return True if row_added > 0 else False
