@@ -9,8 +9,9 @@ def login_user(user):
         user (dict): Contains the username and password of the user trying to login
 
     Returns:
-        json string: If the user was found will return valid boolean of True and the user's id as the token
-                     If the user was not found will return valid boolean False
+        json string: If the user was found will return 
+        valid boolean of True and the user's id as the token
+        If the user was not found will return valid boolean False
     """
     with sqlite3.connect('./db.sqlite3') as conn:
         conn.row_factory = sqlite3.Row
@@ -69,3 +70,43 @@ def create_user(user):
             'token': id,
             'valid': True
         })
+
+def create_post(post):
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (?, ?, ?, ?, ?, ?, 1)
+        """,(
+            post['user_id'],
+            post['category_id'],
+            post['title'],
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            post['image_url'],
+            post['content']
+        ))
+
+        query_results = db_cursor.fetchone()
+        response = json.dumps(query_results)
+
+    return response
+
+def list_categories():
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT c.id, c.label FROM Categories c
+        """)
+
+        query_results = db_cursor.fetchall()
+
+        categories = []
+        for row in query_results:
+            categories.append(dict(row))
+
+        serialized_categories = json.dumps(categories)
+
+    return serialized_categories
