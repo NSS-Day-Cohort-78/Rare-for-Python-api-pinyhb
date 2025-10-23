@@ -28,3 +28,20 @@ def get_categories():
 
         serialized = json.dumps(categories)
     return serialized
+
+
+def create_category(body):
+    """create a new category"""
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO Categories (label) VALUES (?)
+            """,
+            (body["label"],),
+        )
+
+        row_added = cursor.rowcount
+
+    return True if row_added > 0 else False
