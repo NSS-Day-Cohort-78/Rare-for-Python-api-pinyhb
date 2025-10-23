@@ -5,7 +5,7 @@ import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post, create_post
 from views import create_user, login_user, get_all_users, get_user
-from views import get_categories, create_category, delete_category, get_category_by_id
+from views import get_categories, create_category, delete_category, get_category_by_id, update_category
 
 
 class Json_Server(HandleRequests):
@@ -96,9 +96,6 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "posts":
             if pk != 0:
                 try:
-                    print("PK:", pk)
-                    print("Request body:", request_body)
-                    print("Keys in request_body:", request_body.keys())
                     successfully_updated = update_post(pk, request_body)
                     if successfully_updated:
                         return self.response(
@@ -114,6 +111,19 @@ class Json_Server(HandleRequests):
                         json.dumps({"error": str(e)}),
                         status.HTTP_500_SERVER_ERROR.value,
                     )
+
+        if url["requested_resource"] == "edit-category":
+            if pk != 0:
+                successfully_updated = update_category(pk, request_body)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Category not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+
 
 
 def main():
