@@ -28,3 +28,39 @@ def get_categories():
 
         serialized = json.dumps(categories)
     return serialized
+
+
+def create_category(body):
+    """create a new category"""
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO Categories (label) VALUES (?)
+            """,
+            (body["label"],),
+        )
+
+        row_added = cursor.rowcount
+
+    return True if row_added > 0 else False
+
+
+def delete_category(pk):
+
+    with sqlite3.connect(db) as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM Categories
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
