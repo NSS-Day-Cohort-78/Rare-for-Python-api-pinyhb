@@ -2,6 +2,7 @@ import sqlite3
 import json
 from datetime import datetime
 
+
 def login_user(user):
     """Checks for the user in the database
 
@@ -13,28 +14,26 @@ def login_user(user):
         valid boolean of True and the user's id as the token
         If the user was not found will return valid boolean False
     """
-    with sqlite3.connect('./db.sqlite3') as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
             select id, username
             from Users
             where username = ?
             and password = ?
-        """, (user['username'], user['password']))
+        """,
+            (user["username"], user["password"]),
+        )
 
         user_from_db = db_cursor.fetchone()
 
         if user_from_db is not None:
-            response = {
-                'valid': True,
-                'token': user_from_db['id']
-            }
+            response = {"valid": True, "token": user_from_db["id"]}
         else:
-            response = {
-                'valid': False
-            }
+            response = {"valid": False}
 
         return json.dumps(response)
 
@@ -48,65 +47,72 @@ def create_user(user):
     Returns:
         json string: Contains the token of the newly created user
     """
-    with sqlite3.connect('./db.sqlite3') as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
         Insert into Users (first_name, last_name, username, email, password, bio, created_on, active) values (?, ?, ?, ?, ?, ?, ?, 1)
-        """, (
-            user['first_name'],
-            user['last_name'],
-            user['username'],
-            user['email'],
-            user['password'],
-            user['bio'],
-            datetime.now()
-        ))
+        """,
+            (
+                user["first_name"],
+                user["last_name"],
+                user["username"],
+                user["email"],
+                user["password"],
+                user["bio"],
+                datetime.now(),
+            ),
+        )
 
         id = db_cursor.lastrowid
 
-        return json.dumps({
-            'token': id,
-            'valid': True
-        })
+        return json.dumps({"token": id, "valid": True})
 
-def create_post(post):
-    with sqlite3.connect('./db.sqlite3') as conn:
+
+def get_all_users():
+
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
+        cursor = conn.cursor()
 
-        db_cursor.execute("""
-        INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (?, ?, ?, ?, ?, ?, 1)
-        """,(
-            post['user_id'],
-            post['category_id'],
-            post['title'],
-            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            post['image_url'],
-            post['content']
-        ))
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Users
+            ORDER BY username
+            """
+        )
 
-        query_results = db_cursor.fetchone()
-        response = json.dumps(query_results)
+        response = cursor.fetchall()
 
-    return response
+        users = []
+        for row in response:
+            users.append(dict(row))
 
-def list_categories():
-    with sqlite3.connect('./db.sqlite3') as conn:
+        serialized_users = json.dumps(users)
+    return serialized_users
+
+
+def get_user(pk):
+
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
-        db_cursor = conn.cursor()
+        cursor = conn.cursor()
 
-        db_cursor.execute("""
-        SELECT c.id, c.label FROM Categories c
-        """)
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Users
+            WHERE id = ?
+            """,
+            (pk,),
+        )
 
-        query_results = db_cursor.fetchall()
+        response = cursor.fetchone()
 
-        categories = []
-        for row in query_results:
-            categories.append(dict(row))
-
-        serialized_categories = json.dumps(categories)
-
-    return serialized_categories
+        user = json.dumps(dict(response))
+    return user

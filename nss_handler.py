@@ -11,6 +11,7 @@ class status(Enum):
     HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND = 404
     HTTP_500_SERVER_ERROR = 500
 
+
 class HandleRequests(BaseHTTPRequestHandler):
 
     def response(self, body, code):
