@@ -54,3 +54,44 @@ def get_post_reactions(id):
         serialized_reactions = json.dumps(reactions)
 
     return serialized_reactions
+
+
+def get_all_reactions():
+    """get request for all reactions"""
+
+    with sqlite3.connect(db) as conn:
+
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT * FROM Reactions
+            """
+        )
+        response = cursor.fetchall()
+
+        reactions = []
+        for row in response:
+            reactions.append(dict(row))
+
+        serialized_reactions = json.dumps(reactions)
+    return serialized_reactions
+
+
+def create_reaction(body):
+    """create a new reaction"""
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO Reactions (label, image_url)
+            VALUES (?, ?)
+            """,
+            (body["label"], body["image_url"]),
+        )
+
+        added = cursor.rowcount
+
+    return True if added > 0 else False
