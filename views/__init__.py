@@ -5,6 +5,7 @@ from .categories import (
     create_category,
     delete_category,
     get_category_by_id,
-    update_category
+    update_category,
 )
 from .comments import get_all_comments, create_comment, edit_comment, get_comment_by_id
+from .reactions import get_post_reactions
