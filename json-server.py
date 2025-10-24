@@ -14,6 +14,7 @@ from views import (
 )
 from views import get_all_comments, create_comment, edit_comment, get_comment_by_id
 from views import get_post_reactions, create_reaction, get_all_reactions
+from views import get_all_tags
 
 
 class Json_Server(HandleRequests):
@@ -65,6 +66,13 @@ class Json_Server(HandleRequests):
                 pass
             else:
                 request = get_all_reactions()
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+
+        if response["requested_resource"] == "tags":
+            if pk > 0:
+                pass
+            else:
+                request = get_all_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
