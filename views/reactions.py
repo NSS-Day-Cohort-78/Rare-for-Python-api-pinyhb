@@ -21,11 +21,13 @@ def get_post_reactions(id):
                 p.post_id,
                 p.reaction_id,
                 p.user_id,
-                p.id post_reaction_id
+                p.id post_reaction_id,
+                COUNT(p.reaction_id) as count
+
             FROM Reactions r
-            JOIN PostReactions p
-            ON reactionId = p.reaction_id
-            WHERE p.post_id = ?
+            LEFT JOIN PostReactions p
+            ON reactionId = p.reaction_id AND p.post_id =?
+            GROUP BY reactionId
             """,
             (id,),
         )
@@ -39,11 +41,13 @@ def get_post_reactions(id):
                 "reaction_id": row["reaction_id"],
                 "post_id": row["post_id"],
             }
+
             reaction = {
                 "id": row["reactionId"],
                 "label": row["label"],
                 "image_url": row["image_url"],
                 "post_reactions": post_reactions,
+                "count": row["count"],
             }
             reactions.append(reaction)
 
