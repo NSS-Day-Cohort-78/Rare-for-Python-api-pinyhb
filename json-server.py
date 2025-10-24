@@ -13,6 +13,7 @@ from views import (
     update_category,
 )
 from views import get_all_comments, create_comment, edit_comment, get_comment_by_id
+from views import get_post_reactions
 
 
 class Json_Server(HandleRequests):
@@ -54,6 +55,10 @@ class Json_Server(HandleRequests):
                 return self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_comments(response)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+        if response["requested_resource"] == "post-reactions":
+            if pk > 0:
+                request = get_post_reactions(pk)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
