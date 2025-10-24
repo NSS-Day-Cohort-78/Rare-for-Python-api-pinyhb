@@ -200,3 +200,5 @@ INSERT INTO "PostReactions" (user_id, reaction_id, post_id) VALUES
 INSERT INTO "DemotionQueue" (action, admin_id, approver_one_id) VALUES
 ('demote_user_3', 5, 1),
 ('remove_post_6', 5, 2);
+
+INSERT INTO "Comments" (post_id, author_id, content) VALUES (1, 3, 'Thanks for sharing. Do you have any tips for custom hooks?');

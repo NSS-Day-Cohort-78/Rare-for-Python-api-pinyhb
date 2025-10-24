@@ -6,7 +6,7 @@ from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post, create_post
 from views import create_user, login_user, get_all_users, get_user
 from views import get_categories, create_category, delete_category, get_category_by_id, update_category
-from views import get_all_comments, create_comment
+from views import get_all_comments, create_comment, get_comment_by_id, delete_comment
 
 
 class Json_Server(HandleRequests):
@@ -44,7 +44,8 @@ class Json_Server(HandleRequests):
 
         if response["requested_resource"] == "comments":
             if pk > 0:
-                pass
+                request = get_comment_by_id(pk)
+                self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_comments(response)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -91,6 +92,14 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "categories":
             if pk > 0:
                 response = delete_category(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+        
+        if url["requested_resource"] == "comments":
+            if pk > 0:
+                response = delete_comment(pk)
                 if response:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value

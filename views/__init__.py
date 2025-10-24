@@ -7,4 +7,9 @@ from .categories import (
     get_category_by_id,
     update_category
 )
-from .comments import get_all_comments, create_comment
+from .comments import (
+    get_all_comments, 
+    create_comment,
+    get_comment_by_id,
+    delete_comment
+)

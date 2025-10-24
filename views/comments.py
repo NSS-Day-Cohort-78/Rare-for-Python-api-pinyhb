@@ -42,7 +42,10 @@ def get_all_comments(request):
         comments = []
         for row in response:
             category = {"label": row["label"]}
-            author = {"username": row["username"]}
+            author = {
+                "username": row["username"], 
+                "author_id": row["userId"]
+            }
             post = {"title": row["title"]}
             comment = {
                 "id": row["commentId"],
@@ -73,3 +76,48 @@ def create_comment(body):
         row_added = cursor.rowcount
 
     return True if row_added > 0 else False
+
+def get_comment_by_id(pk):
+    with sqlite3.connect(db) as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                c.id commentId,
+                c.post_id,
+                c.author_id
+            FROM Comments c
+            WHERE c.id = ?
+            """,
+            (pk,),
+        )
+
+        response = cursor.fetchone()
+
+        comment = {
+            "commentId": response["commentId"],
+            "post_id": response["post_id"],
+            "author_id": response["author_id"],
+        }
+    
+        serialized_comment = json.dumps(comment)
+
+    return serialized_comment
+
+def delete_comment(pk):
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM Comments
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
