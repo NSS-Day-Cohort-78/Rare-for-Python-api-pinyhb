@@ -9,3 +9,4 @@ from .categories import (
 )
 from .comments import get_all_comments, create_comment, edit_comment, get_comment_by_id
 from .reactions import get_post_reactions, create_reaction, get_all_reactions
+from .tags import get_all_tags
