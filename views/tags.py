@@ -14,6 +14,7 @@ def get_all_tags():
         cursor.execute(
             """
             SELECT * FROM Tags
+            ORDER BY label
             """
         )
 
