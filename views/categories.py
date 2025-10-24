@@ -29,6 +29,7 @@ def get_categories():
         serialized = json.dumps(categories)
     return serialized
 
+
 def get_category_by_id(pk):
     with sqlite3.connect(db) as conn:
         conn.row_factory = sqlite3.Row
@@ -85,6 +86,7 @@ def delete_category(pk):
 
     return True if row_affected > 0 else False
 
+
 def update_category(pk, category_data):
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
@@ -96,7 +98,7 @@ def update_category(pk, category_data):
                     label = ?
             WHERE id = ?
             """,
-            (category_data["label"], pk)
+            (category_data["label"], pk),
         )
 
         rows_affected = cursor.rowcount
