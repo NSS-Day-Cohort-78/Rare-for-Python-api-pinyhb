@@ -14,7 +14,7 @@ from views import (
 )
 from views import get_all_comments, create_comment, edit_comment, get_comment_by_id
 from views import get_post_reactions, create_reaction, get_all_reactions
-from views import get_all_tags
+from views import get_all_tags, get_tag_by_id, update_tag
 
 
 class Json_Server(HandleRequests):
@@ -70,7 +70,8 @@ class Json_Server(HandleRequests):
 
         if response["requested_resource"] == "tags":
             if pk > 0:
-                pass
+                request = get_tag_by_id(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -175,6 +176,18 @@ class Json_Server(HandleRequests):
                     )
                 return self.response(
                     json.dumps({"error": "Category not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+        if url["requested_resource"] == "tags":
+            if pk != 0:
+                successfully_updated = update_tag(pk, request_body)
+
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Tag not found"}),
                     status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
                 )
 
