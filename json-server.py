@@ -32,6 +32,7 @@ from views import (
     delete_tag,
     create_tag,
     get_post_tags,
+    add_post_tag,
 )
 
 
@@ -132,6 +133,10 @@ class Json_Server(HandleRequests):
             response = create_post_reaction(request_body)
         elif url["requested_resource"] == "tags":
             response = create_tag(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "post-tags":
+            response = add_post_tag(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
