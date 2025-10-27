@@ -12,7 +12,7 @@ from views import (
     get_category_by_id,
     update_category,
 )
-from views import get_all_comments, create_comment, edit_comment, get_comment_by_id
+from views import get_all_comments, create_comment, edit_comment, get_comment_by_id, delete_comment
 from views import get_post_reactions, create_reaction, get_all_reactions
 from views import get_all_tags
 
@@ -125,6 +125,14 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "categories":
             if pk > 0:
                 response = delete_category(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+        
+        if url["requested_resource"] == "comments":
+            if pk > 0:
+                response = delete_comment(pk)
                 if response:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
