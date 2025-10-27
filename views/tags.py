@@ -75,3 +75,38 @@ def update_tag(pk, body):
         row_affected = cursor.rowcount
 
     return True if row_affected > 0 else False
+
+
+def delete_tag(pk):
+    """delete a tag"""
+    with sqlite3.connect(db) as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM Tags
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
+
+
+def create_tag(body):
+    """create a tag"""
+    with sqlite3.connect(db) as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO Tags (label) Values (?)
+            """,
+            (body["label"],),
+        )
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False

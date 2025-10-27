@@ -75,6 +75,7 @@ CREATE TABLE "Comments" (
   "post_id" INTEGER,
   "author_id" INTEGER,
   "content" varchar,
+  "creation_date" date,
   FOREIGN KEY(`post_id`) REFERENCES `Posts`(`id`),
   FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
 );
@@ -171,13 +172,13 @@ INSERT INTO "Subscriptions" (follower_id, author_id, created_on) VALUES
 (2, 3, '2024-03-08');
 
 -- Seed Comments
-INSERT INTO "Comments" (post_id, author_id, content) VALUES
-(1, 2, 'Great explanation! This really helped me understand hooks better.'),
-(1, 3, 'Thanks for sharing. Do you have any tips for custom hooks?'),
-(2, 1, 'Excellent post! The type hints section was particularly useful.'),
-(3, 4, 'Very comprehensive tutorial. Looking forward to trying this out!'),
-(4, 1, 'Fascinating read! Never thought about color psychology this deeply.'),
-(1, 4, 'Bookmarked for future reference. Clear and concise!');
+INSERT INTO "Comments" (post_id, author_id, content, creation_date) VALUES
+(1, 2, 'Great explanation! This really helped me understand hooks better.', '2024-01-15'),
+(1, 3, 'Thanks for sharing. Do you have any tips for custom hooks?', '2024-01-16'),
+(2, 1, 'Excellent post! The type hints section was particularly useful.', '2024-01-20'),
+(3, 4, 'Very comprehensive tutorial. Looking forward to trying this out!', '2024-02-05'),
+(4, 1, 'Fascinating read! Never thought about color psychology this deeply.', '2024-02-12'),
+(1, 4, 'Bookmarked for future reference. Clear and concise!', '2024-01-17');
 
 -- Seed PostTags
 INSERT INTO "PostTags" (post_id, tag_id) VALUES
@@ -200,3 +201,5 @@ INSERT INTO "PostReactions" (user_id, reaction_id, post_id) VALUES
 INSERT INTO "DemotionQueue" (action, admin_id, approver_one_id) VALUES
 ('demote_user_3', 5, 1),
 ('remove_post_6', 5, 2);
+
+INSERT INTO "Comments" (post_id, author_id, content) VALUES (1, 3, 'Thanks for sharing. Do you have any tips for custom hooks?');

@@ -12,9 +12,15 @@ from views import (
     get_category_by_id,
     update_category,
 )
-from views import get_all_comments, create_comment, edit_comment, get_comment_by_id, delete_comment
+from views import (
+    get_all_comments,
+    create_comment,
+    edit_comment,
+    get_comment_by_id,
+    delete_comment,
+)
 from views import get_post_reactions, create_reaction, get_all_reactions, create_post_reaction
-from views import get_all_tags, get_tag_by_id, update_tag
+from views import get_all_tags, get_tag_by_id, update_tag, delete_tag, create_tag
 
 
 class Json_Server(HandleRequests):
@@ -108,6 +114,8 @@ class Json_Server(HandleRequests):
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "post-reaction":
             response = create_post_reaction(request_body)
+        elif url["requested_resource"] == "tags":
+            response = create_tag(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
@@ -142,6 +150,22 @@ class Json_Server(HandleRequests):
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
+
+        if url["requested_resource"] == "comments":
+            if pk > 0:
+                response = delete_comment(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+        if url["requested_resource"] == "tags":
+            if pk > 0:
+                response = delete_tag(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND)
 
     def do_PUT(self):
         url = self.parse_url(self.path)
