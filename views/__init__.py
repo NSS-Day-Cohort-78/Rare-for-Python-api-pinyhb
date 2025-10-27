@@ -12,7 +12,19 @@ from .comments import (
     create_comment,
     edit_comment,
     get_comment_by_id,
-    delete_comment
+    delete_comment,
 )
-from .reactions import get_post_reactions, create_reaction, get_all_reactions
-from .tags import get_all_tags
+from .reactions import (
+    get_post_reactions,
+    create_reaction,
+    get_all_reactions,
+    create_post_reaction,
+)
+from .tags import (
+    get_all_tags,
+    get_tag_by_id,
+    update_tag,
+    delete_tag,
+    create_tag,
+    get_post_tags,
+)
