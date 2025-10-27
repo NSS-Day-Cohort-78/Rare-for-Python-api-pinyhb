@@ -20,7 +20,7 @@ from views import (
     delete_comment,
 )
 from views import get_post_reactions, create_reaction, get_all_reactions
-from views import get_all_tags, get_tag_by_id, update_tag, delete_tag
+from views import get_all_tags, get_tag_by_id, update_tag, delete_tag, create_tag
 
 
 class Json_Server(HandleRequests):
@@ -110,6 +110,10 @@ class Json_Server(HandleRequests):
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "reactions":
             response = create_reaction(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "tags":
+            response = create_tag(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:

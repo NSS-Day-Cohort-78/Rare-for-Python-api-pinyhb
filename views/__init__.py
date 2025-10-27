@@ -15,4 +15,4 @@ from .comments import (
     delete_comment,
 )
 from .reactions import get_post_reactions, create_reaction, get_all_reactions
-from .tags import get_all_tags, get_tag_by_id, update_tag, delete_tag
+from .tags import get_all_tags, get_tag_by_id, update_tag, delete_tag, create_tag
