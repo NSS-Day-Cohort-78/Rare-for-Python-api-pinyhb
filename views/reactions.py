@@ -95,3 +95,20 @@ def create_reaction(body):
         added = cursor.rowcount
 
     return True if added > 0 else False
+
+def create_post_reaction(body):
+    """Save reactions to a post"""
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO PostReactions (user_id, reaction_id, post_id)
+            VALUES (?, ?, ?)
+            """,
+            (body["user_id"], body["reaction_id"], body["post_id"])
+        )
+
+        added = cursor.rowcount
+
+    return True if added > 0 else False

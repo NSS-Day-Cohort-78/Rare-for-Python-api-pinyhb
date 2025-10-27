@@ -19,7 +19,7 @@ from views import (
     get_comment_by_id,
     delete_comment,
 )
-from views import get_post_reactions, create_reaction, get_all_reactions
+from views import get_post_reactions, create_reaction, get_all_reactions, create_post_reaction
 from views import get_all_tags, get_tag_by_id, update_tag, delete_tag, create_tag
 
 
@@ -63,7 +63,7 @@ class Json_Server(HandleRequests):
             else:
                 request = get_all_comments(response)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
-        if response["requested_resource"] == "post-reactions":
+        if response["requested_resource"] == "post-reaction":
             if pk > 0:
                 request = get_post_reactions(pk)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -112,6 +112,8 @@ class Json_Server(HandleRequests):
             response = create_reaction(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "post-reaction":
+            response = create_post_reaction(request_body)
         elif url["requested_resource"] == "tags":
             response = create_tag(request_body)
             if response:
@@ -136,6 +138,14 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "categories":
             if pk > 0:
                 response = delete_category(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+        
+        if url["requested_resource"] == "comments":
+            if pk > 0:
+                response = delete_comment(pk)
                 if response:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
