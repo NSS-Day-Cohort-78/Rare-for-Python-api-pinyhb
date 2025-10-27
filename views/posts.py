@@ -214,3 +214,38 @@ def list_categories():
         serialized_categories = json.dumps(categories)
 
     return serialized_categories
+
+def get_posts_by_tag():
+    """Get Posts by Tag"""
+    with sqlite3.connect(db) as conn:
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT 
+                p.id postId, 
+                p.title,
+                t.label tag_label
+            FROM Posts p
+            JOIN PostTags pt ON p.id = pt.post_id
+            JOIN Tags t ON pt.tag_id = t.id
+            WHERE t.label = ?
+            """
+        )
+        response = cursor.fetchall()
+
+        posts = []
+
+        for row in response:
+
+            post = {
+                "id": row["postId"],
+                "post_title": row["p.title"],
+                "tag_label": row["tag_label"]
+            }
+            posts.append(post)
+
+        serialized_posts = json.dumps(posts)
+    return serialized_posts

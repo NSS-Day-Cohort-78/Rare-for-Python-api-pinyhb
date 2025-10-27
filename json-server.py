@@ -3,7 +3,7 @@
 from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
-from views import get_posts, get_post_by_id, delete_post, update_post, create_post
+from views import get_posts, get_post_by_id, delete_post, update_post, create_post, get_posts_by_tag
 from views import create_user, login_user, get_all_users, get_user
 from views import (
     get_categories,
@@ -67,7 +67,6 @@ class Json_Server(HandleRequests):
             else:
                 request = get_all_reactions()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
-
         if response["requested_resource"] == "tags":
             if pk > 0:
                 pass
