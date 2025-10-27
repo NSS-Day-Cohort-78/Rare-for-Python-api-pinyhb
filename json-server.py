@@ -19,8 +19,20 @@ from views import (
     get_comment_by_id,
     delete_comment,
 )
-from views import get_post_reactions, create_reaction, get_all_reactions, create_post_reaction
-from views import get_all_tags, get_tag_by_id, update_tag, delete_tag, create_tag
+from views import (
+    get_post_reactions,
+    create_reaction,
+    get_all_reactions,
+    create_post_reaction,
+)
+from views import (
+    get_all_tags,
+    get_tag_by_id,
+    update_tag,
+    delete_tag,
+    create_tag,
+    get_post_tags,
+)
 
 
 class Json_Server(HandleRequests):
@@ -80,6 +92,10 @@ class Json_Server(HandleRequests):
                 return self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_tags()
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+        if response["requested_resource"] == "post-tags":
+            if pk > 0:
+                request = get_post_tags(pk)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
@@ -142,7 +158,7 @@ class Json_Server(HandleRequests):
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
-        
+
         if url["requested_resource"] == "comments":
             if pk > 0:
                 response = delete_comment(pk)
