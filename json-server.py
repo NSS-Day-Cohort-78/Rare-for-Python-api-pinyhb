@@ -5,7 +5,16 @@ import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post, create_post
 from views import create_user, login_user, get_all_users, get_user
-from views import get_categories, create_category, delete_category
+from views import (
+    get_categories,
+    create_category,
+    delete_category,
+    get_category_by_id,
+    update_category,
+)
+from views import get_all_comments, create_comment, edit_comment, get_comment_by_id, delete_comment
+from views import get_post_reactions, create_reaction, get_all_reactions, create_post_reaction
+from views import get_all_tags, get_tag_by_id, update_tag
 
 
 class Json_Server(HandleRequests):
@@ -27,7 +36,8 @@ class Json_Server(HandleRequests):
 
         if response["requested_resource"] == "categories":
             if pk > 0:
-                pass
+                request = get_category_by_id(pk)
+                self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_categories()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -38,6 +48,32 @@ class Json_Server(HandleRequests):
                 return self.response(request, status.HTTP_200_SUCCESS.value)
             else:
                 request = get_all_users()
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+
+        if response["requested_resource"] == "comments":
+            if pk > 0:
+                request = get_comment_by_id(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+            else:
+                request = get_all_comments(response)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+        if response["requested_resource"] == "post-reaction":
+            if pk > 0:
+                request = get_post_reactions(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+        if response["requested_resource"] == "reactions":
+            if pk > 0:
+                pass
+            else:
+                request = get_all_reactions()
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+
+        if response["requested_resource"] == "tags":
+            if pk > 0:
+                request = get_tag_by_id(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+            else:
+                request = get_all_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
@@ -58,6 +94,22 @@ class Json_Server(HandleRequests):
             if url["pk"] == 0:
                 response = create_post(request_body)
                 return self.response(response, status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "comments":
+            response = create_comment(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "categories":
+            response = create_category(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "reactions":
+            response = create_reaction(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "post-reaction":
+            response = create_post_reaction(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
@@ -82,6 +134,14 @@ class Json_Server(HandleRequests):
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
+        
+        if url["requested_resource"] == "comments":
+            if pk > 0:
+                response = delete_comment(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
 
     def do_PUT(self):
         url = self.parse_url(self.path)
@@ -95,9 +155,6 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "posts":
             if pk != 0:
                 try:
-                    print("PK:", pk)
-                    print("Request body:", request_body)
-                    print("Keys in request_body:", request_body.keys())
                     successfully_updated = update_post(pk, request_body)
                     if successfully_updated:
                         return self.response(
@@ -113,6 +170,38 @@ class Json_Server(HandleRequests):
                         json.dumps({"error": str(e)}),
                         status.HTTP_500_SERVER_ERROR.value,
                     )
+        if url["requested_resource"] == "comments":
+            if pk != 0:
+
+                successfully_updated = edit_comment(request_body, pk)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+
+        if url["requested_resource"] == "edit-category":
+            if pk != 0:
+                successfully_updated = update_category(pk, request_body)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Category not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+        if url["requested_resource"] == "tags":
+            if pk != 0:
+                successfully_updated = update_tag(pk, request_body)
+
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Tag not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
 
 
 def main():
