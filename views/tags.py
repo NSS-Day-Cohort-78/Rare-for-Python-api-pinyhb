@@ -110,3 +110,32 @@ def create_tag(body):
         row_affected = cursor.rowcount
 
     return True if row_affected > 0 else False
+
+
+def get_post_tags(pk):
+    """get tags for a post"""
+    with sqlite3.connect(db) as conn:
+        conn.row_factory = sqlite3.Row
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT * FROM PostTags
+            WHERE post_id =?
+            """,
+            (pk,),
+        )
+
+        response = cursor.fetchall()
+
+        tags = []
+        for row in response:
+            tags.append(dict(row))
+
+        serialized_tags = json.dumps(tags)
+    return serialized_tags
+
+
+def add_post_tag(body):
+    """add a tag to a post"""
