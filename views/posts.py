@@ -37,6 +37,7 @@ def get_posts():
             ON userId = p.user_id
             JOIN Categories c
             ON p.category_id = categoryId
+            WHERE p.publication_date < DATE('now')
             ORDER BY p.publication_date DESC
             """
         )
@@ -172,38 +173,42 @@ def update_post(pk, post_data):
 
     return True if rows_affected > 0 else False
 
+
 def create_post(post):
-    with sqlite3.connect('./db.sqlite3') as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
         INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (?, ?, ?, ?, ?, ?, 1)
-        """,(
-            post['user_id'],
-            post['category_id'],
-            post['title'],
-            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            post['image_url'],
-            post['content']
-        ))
+        """,
+            (
+                post["user_id"],
+                post["category_id"],
+                post["title"],
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                post["image_url"],
+                post["content"],
+            ),
+        )
 
         new_post_id = db_cursor.lastrowid
-        response = json.dumps({
-            'id': new_post_id,
-            'success': True
-        })
+        response = json.dumps({"id": new_post_id, "success": True})
 
     return response
 
+
 def list_categories():
-    with sqlite3.connect('./db.sqlite3') as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        db_cursor.execute("""
+        db_cursor.execute(
+            """
         SELECT c.id, c.label FROM Categories c
-        """)
+        """
+        )
 
         query_results = db_cursor.fetchall()
 

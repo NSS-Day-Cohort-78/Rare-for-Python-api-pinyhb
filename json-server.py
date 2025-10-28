@@ -30,7 +30,9 @@ from views import (
     get_tag_by_id,
     update_tag,
     delete_tag,
-    create_tag
+    create_tag,
+    get_post_tags,
+    add_post_tag,
 )
 from views import ( get_all_post_tags )
 
@@ -94,9 +96,8 @@ class Json_Server(HandleRequests):
                 return self.response(request, status.HTTP_200_SUCCESS.value)
         if response["requested_resource"] == "post-tags":
             if pk > 0:
-                pass
-                # request = get_post_tags(pk)
-                # return self.response(request, status.HTTP_200_SUCCESS.value)
+                request = get_post_tags(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
             else: 
                 request = get_all_post_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -135,6 +136,10 @@ class Json_Server(HandleRequests):
             response = create_post_reaction(request_body)
         elif url["requested_resource"] == "tags":
             response = create_tag(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "post-tags":
+            response = add_post_tag(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
