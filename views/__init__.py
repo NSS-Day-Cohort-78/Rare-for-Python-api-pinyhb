@@ -1,4 +1,4 @@
-from .posts import get_posts, get_post_by_id, delete_post, update_post, create_post
+from .posts import get_posts, get_post_by_id, delete_post, update_post, create_post, get_posts_by_tag
 from .user import create_user, login_user, get_user, get_all_users
 from .categories import (
     get_categories,
@@ -29,3 +29,4 @@ from .tags import (
     get_post_tags,
     add_post_tag,
 )
+from .post_tags import get_all_post_tags

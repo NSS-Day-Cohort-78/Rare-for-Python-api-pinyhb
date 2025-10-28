@@ -34,6 +34,7 @@ from views import (
     get_post_tags,
     add_post_tag,
 )
+from views import ( get_all_post_tags )
 
 
 class Json_Server(HandleRequests):
@@ -86,7 +87,6 @@ class Json_Server(HandleRequests):
             else:
                 request = get_all_reactions()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
-
         if response["requested_resource"] == "tags":
             if pk > 0:
                 request = get_tag_by_id(pk)
@@ -97,6 +97,9 @@ class Json_Server(HandleRequests):
         if response["requested_resource"] == "post-tags":
             if pk > 0:
                 request = get_post_tags(pk)
+                return self.response(request, status.HTTP_200_SUCCESS.value)
+            else: 
+                request = get_all_post_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
