@@ -40,12 +40,13 @@ def get_all_post_tags():
             }
 
             post_tag = {
+                "id": row["post_id"],
                 "post": post,
                 "tag": tag,
             }
 
             post_tags.append(post_tag)
-    
+
         serialized_pt = json.dumps(post_tags)
 
     return serialized_pt

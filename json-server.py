@@ -3,7 +3,7 @@
 from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
-from views import get_posts, get_post_by_id, delete_post, update_post, create_post, get_posts_by_tag
+from views import get_posts, get_post_by_id, delete_post, update_post, create_post
 from views import create_user, login_user, get_all_users, get_user
 from views import (
     get_categories,
@@ -30,9 +30,9 @@ from views import (
     get_tag_by_id,
     update_tag,
     delete_tag,
-    create_tag,
-    get_post_tags,
+    create_tag
 )
+from views import ( get_all_post_tags )
 
 
 class Json_Server(HandleRequests):
@@ -94,7 +94,11 @@ class Json_Server(HandleRequests):
                 return self.response(request, status.HTTP_200_SUCCESS.value)
         if response["requested_resource"] == "post-tags":
             if pk > 0:
-                request = get_post_tags(pk)
+                pass
+                # request = get_post_tags(pk)
+                # return self.response(request, status.HTTP_200_SUCCESS.value)
+            else: 
+                request = get_all_post_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
