@@ -4,7 +4,7 @@ from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post, create_post
-from views import create_user, login_user, get_all_users, get_user
+from views import create_user, login_user, get_all_users, get_user, add_new_subscription, get_all_subscriptions
 from views import (
     get_categories,
     create_category,
@@ -101,6 +101,12 @@ class Json_Server(HandleRequests):
             else: 
                 request = get_all_post_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
+        if response["requested_resource"] == "subscriptions":
+            if pk > 0:
+                pass
+            else:
+                request = get_all_subscriptions()
+                return self.response(request, status.HTTP_200_SUCCESS.value)
 
     def do_POST(self):
         url = self.parse_url(self.path)
@@ -140,6 +146,10 @@ class Json_Server(HandleRequests):
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "post-tags":
             response = add_post_tag(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "subscriptions":
+            response = add_new_subscription(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:

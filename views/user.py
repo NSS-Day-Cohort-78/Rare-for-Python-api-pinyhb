@@ -116,3 +116,47 @@ def get_user(pk):
 
         user = json.dumps(dict(response))
     return user
+
+def add_new_subscription(subscription):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+        INSERT INTO Subscriptions (follower_id, author_id, created_on) VALUES (?, ?, ?)
+        """,
+            (
+                subscription["follower_id"],
+                subscription["author_id"],
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            ),
+        )
+
+        new_subscription_id = db_cursor.lastrowid
+        response = json.dumps({"id": new_subscription_id, "success": True})
+
+    return response
+
+def get_all_subscriptions():
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Subscriptions
+            ORDER BY created_on DESC
+            """
+        )
+
+        response = cursor.fetchall()
+
+        subscriptions = []
+        for row in response:
+            subscriptions.append(dict(row))
+
+        serialized_subscriptions = json.dumps(subscriptions)
+    return serialized_subscriptions
