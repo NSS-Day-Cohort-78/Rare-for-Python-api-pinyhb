@@ -10,7 +10,7 @@ def login_user(user):
         user (dict): Contains the username and password of the user trying to login
 
     Returns:
-        json string: If the user was found will return 
+        json string: If the user was found will return
         valid boolean of True and the user's id as the token
         If the user was not found will return valid boolean False
     """
@@ -104,10 +104,10 @@ def get_user(pk):
 
         cursor.execute(
             """
-            SELECT
-                *
-            FROM Users
-            WHERE id = ?
+              SELECT *, COUNT(*) AS subscribers FROM Users u
+                JOIN Subscriptions s
+                ON u.id = s.author_id
+                WHERE u.id = ?
             """,
             (pk,),
         )
@@ -116,6 +116,7 @@ def get_user(pk):
 
         user = json.dumps(dict(response))
     return user
+
 
 def add_new_subscription(subscription):
     with sqlite3.connect("./db.sqlite3") as conn:
@@ -129,7 +130,7 @@ def add_new_subscription(subscription):
             (
                 subscription["follower_id"],
                 subscription["author_id"],
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             ),
         )
 
@@ -137,6 +138,7 @@ def add_new_subscription(subscription):
         response = json.dumps({"id": new_subscription_id, "success": True})
 
     return response
+
 
 def get_all_subscriptions():
     with sqlite3.connect("./db.sqlite3") as conn:
