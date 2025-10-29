@@ -162,3 +162,67 @@ def get_all_subscriptions():
 
         serialized_subscriptions = json.dumps(subscriptions)
     return serialized_subscriptions
+
+
+def get_subscription_by_follower(pk, params):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Subscriptions
+            WHERE follower_id = ? AND author_id = ?
+        
+            """,
+            (pk, params["author"][0]),
+        )
+
+        response = cursor.fetchone()
+
+        serialized_subscriptions = json.dumps(dict(response))
+    return serialized_subscriptions
+
+
+def unsubscribe_to_user(pk):
+    """unsubscribe to a user"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Subscriptions
+            SET
+                ended_on = ?
+            WHERE id =?
+            """,
+            (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), pk),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
+
+
+def resubscribe_to_user(pk):
+    """unsubscribe to a user"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Subscriptions
+            SET
+                created_on = ?
+            WHERE id =?
+            """,
+            (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), pk),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False

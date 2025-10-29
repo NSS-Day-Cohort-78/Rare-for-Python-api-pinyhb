@@ -4,7 +4,17 @@ from http.server import HTTPServer
 import json
 from nss_handler import HandleRequests, status
 from views import get_posts, get_post_by_id, delete_post, update_post, create_post
-from views import create_user, login_user, get_all_users, get_user, add_new_subscription, get_all_subscriptions
+from views import (
+    create_user,
+    login_user,
+    get_all_users,
+    get_user,
+    add_new_subscription,
+    get_all_subscriptions,
+    get_subscription_by_follower,
+    unsubscribe_to_user,
+    resubscribe_to_user,
+)
 from views import (
     get_categories,
     create_category,
@@ -34,7 +44,7 @@ from views import (
     get_post_tags,
     add_post_tag,
 )
-from views import ( get_all_post_tags )
+from views import get_all_post_tags
 
 
 class Json_Server(HandleRequests):
@@ -98,12 +108,18 @@ class Json_Server(HandleRequests):
             if pk > 0:
                 request = get_post_tags(pk)
                 return self.response(request, status.HTTP_200_SUCCESS.value)
-            else: 
+            else:
                 request = get_all_post_tags()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
         if response["requested_resource"] == "subscriptions":
             if pk > 0:
-                pass
+                try:
+                    request = get_subscription_by_follower(pk, response["query_params"])
+                    return self.response(request, status.HTTP_200_SUCCESS.value)
+                except Exception:
+                    return self.response(
+                        "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
+                    )
             else:
                 request = get_all_subscriptions()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
@@ -199,7 +215,7 @@ class Json_Server(HandleRequests):
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
-                self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND)
+                self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
 
     def do_PUT(self):
         url = self.parse_url(self.path)
@@ -252,6 +268,28 @@ class Json_Server(HandleRequests):
             if pk != 0:
                 successfully_updated = update_tag(pk, request_body)
 
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Tag not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+        if url["requested_resource"] == "unsubscribe":
+            if pk > 0:
+                successfully_updated = unsubscribe_to_user(pk)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Tag not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+        if url["requested_resource"] == "resubscribe":
+            if pk > 0:
+                successfully_updated = resubscribe_to_user(pk)
                 if successfully_updated:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
