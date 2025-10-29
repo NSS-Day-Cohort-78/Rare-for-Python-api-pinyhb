@@ -32,6 +32,7 @@ from views import (
     delete_tag,
     create_tag,
     get_post_tags,
+    delete_post_tag
 )
 
 
@@ -177,6 +178,14 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "tags":
             if pk > 0:
                 response = delete_tag(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND)
+        if url["requested_resource"] == "post-tags":
+            if pk > 0:
+                response = delete_post_tag(pk)
                 if response:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
