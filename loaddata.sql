@@ -202,5 +202,3 @@ INSERT INTO "DemotionQueue" (action, admin_id, approver_one_id) VALUES
 ('demote_user_3', 5, 1),
 ('remove_post_6', 5, 2);
 
-SELECT * FROM PostTags
-WHERE post_id = 1
