@@ -5,6 +5,7 @@ from .posts import (
     update_post,
     create_post,
     get_posts_by_tag,
+    update_approval,
 )
 from .user import (
     create_user,

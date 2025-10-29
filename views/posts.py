@@ -220,6 +220,7 @@ def list_categories():
 
     return serialized_categories
 
+
 def get_posts_by_tag():
     """Get Posts by Tag"""
     with sqlite3.connect(db) as conn:
@@ -248,9 +249,28 @@ def get_posts_by_tag():
             post = {
                 "id": row["postId"],
                 "post_title": row["p.title"],
-                "tag_label": row["tag_label"]
+                "tag_label": row["tag_label"],
             }
             posts.append(post)
 
         serialized_posts = json.dumps(posts)
     return serialized_posts
+
+
+def update_approval(pk, body):
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Posts
+                SET
+                    approved = ?
+            WHERE id = ?
+            """,
+            (body["approved"], pk),
+        )
+
+        rows_affected = cursor.rowcount
+
+    return True if rows_affected > 0 else False
