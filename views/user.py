@@ -10,7 +10,7 @@ def login_user(user):
         user (dict): Contains the username and password of the user trying to login
 
     Returns:
-        json string: If the user was found will return 
+        json string: If the user was found will return
         valid boolean of True and the user's id as the token
         If the user was not found will return valid boolean False
     """
@@ -104,10 +104,10 @@ def get_user(pk):
 
         cursor.execute(
             """
-            SELECT
-                *
-            FROM Users
-            WHERE id = ?
+              SELECT *, COUNT(*) AS subscribers FROM Users u
+                JOIN Subscriptions s
+                ON u.id = s.author_id
+                WHERE u.id = ?
             """,
             (pk,),
         )
@@ -116,3 +116,113 @@ def get_user(pk):
 
         user = json.dumps(dict(response))
     return user
+
+
+def add_new_subscription(subscription):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+        INSERT INTO Subscriptions (follower_id, author_id, created_on) VALUES (?, ?, ?)
+        """,
+            (
+                subscription["follower_id"],
+                subscription["author_id"],
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            ),
+        )
+
+        new_subscription_id = db_cursor.lastrowid
+        response = json.dumps({"id": new_subscription_id, "success": True})
+
+    return response
+
+
+def get_all_subscriptions():
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Subscriptions
+            ORDER BY created_on DESC
+            """
+        )
+
+        response = cursor.fetchall()
+
+        subscriptions = []
+        for row in response:
+            subscriptions.append(dict(row))
+
+        serialized_subscriptions = json.dumps(subscriptions)
+    return serialized_subscriptions
+
+
+def get_subscription_by_follower(pk, params):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT
+                *
+            FROM Subscriptions
+            WHERE follower_id = ? AND author_id = ?
+        
+            """,
+            (pk, params["author"][0]),
+        )
+
+        response = cursor.fetchone()
+
+        serialized_subscriptions = json.dumps(dict(response))
+    return serialized_subscriptions
+
+
+def unsubscribe_to_user(pk):
+    """unsubscribe to a user"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Subscriptions
+            SET
+                ended_on = ?
+            WHERE id =?
+            """,
+            (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), pk),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
+
+
+def resubscribe_to_user(pk):
+    """unsubscribe to a user"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Subscriptions
+            SET
+                created_on = ?
+            WHERE id =?
+            """,
+            (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), pk),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False

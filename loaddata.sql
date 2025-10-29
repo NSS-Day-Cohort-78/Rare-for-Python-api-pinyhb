@@ -54,6 +54,7 @@ CREATE TABLE "Subscriptions" (
   "follower_id" INTEGER,
   "author_id" INTEGER,
   "created_on" date,
+  'ended_on' date,
   FOREIGN KEY(`follower_id`) REFERENCES `Users`(`id`),
   FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
 );

@@ -139,6 +139,20 @@ def get_post_tags(pk):
 
 def add_post_tag(body):
     """add a tag to a post"""
+    with sqlite3.connect(db) as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO PostTags (post_id, tag_id)
+            VALUES (?, ?)
+            """,
+            (body["post_id"], body["tag_id"]),
+        )
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
 
 def delete_post_tag(pk):
     """delete a tag from a post"""
