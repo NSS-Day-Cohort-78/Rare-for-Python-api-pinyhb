@@ -105,7 +105,7 @@ def get_user(pk):
         cursor.execute(
             """
               SELECT *, COUNT(*) AS subscribers FROM Users u
-                JOIN Subscriptions s
+                LEFT JOIN Subscriptions s
                 ON u.id = s.author_id
                 WHERE u.id = ?
             """,
@@ -221,6 +221,27 @@ def resubscribe_to_user(pk):
             WHERE id =?
             """,
             (datetime.now().strftime("%Y-%m-%d %H:%M:%S"), pk),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
+
+
+def update_user_type(pk, body):
+    """update a user type"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Users
+            SET
+                admin = ?
+            WHERE id =?
+            """,
+            (body["admin"], pk),
         )
 
         row_affected = cursor.rowcount
