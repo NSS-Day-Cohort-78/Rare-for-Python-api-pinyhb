@@ -36,7 +36,8 @@ CREATE TABLE "Users" (
   "password" varchar,
   "profile_image_url" varchar,
   "created_on" date,
-  "active" bit
+  "active" bit,
+  'admin' boolean
 );
 
 CREATE TABLE "DemotionQueue" (
@@ -116,12 +117,12 @@ CREATE TABLE "Categories" (
 );
 
 -- Seed Users
-INSERT INTO "Users" (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active) VALUES
-('John', 'Doe', 'john.doe@example.com', 'Software developer passionate about web technologies', 'johndoe', 'password123', 'https://i.pravatar.cc/150?img=1', '2024-01-15', 1),
-('Jane', 'Smith', 'jane.smith@example.com', 'Tech writer and blogger', 'janesmith', 'password123', 'https://i.pravatar.cc/150?img=2', '2024-01-20', 1),
-('Mike', 'Johnson', 'mike.j@example.com', 'Full-stack developer and open source contributor', 'mikej', 'password123', 'https://i.pravatar.cc/150?img=3', '2024-02-01', 1),
-('Sarah', 'Williams', 'sarah.w@example.com', 'UX designer who loves writing about design', 'sarahw', 'password123', 'https://i.pravatar.cc/150?img=4', '2024-02-10', 1),
-('Admin', 'User', 'admin@example.com', 'Site administrator', 'admin', 'admin123', 'https://i.pravatar.cc/150?img=5', '2024-01-01', 1);
+INSERT INTO "Users" (first_name, last_name, email, bio, username, password, profile_image_url, created_on, active, admin) VALUES
+('John', 'Doe', 'john.doe@example.com', 'Software developer passionate about web technologies', 'johndoe', 'password123', 'https://i.pravatar.cc/150?img=1', '2024-01-15', 1, 0),
+('Jane', 'Smith', 'jane.smith@example.com', 'Tech writer and blogger', 'janesmith', 'password123', 'https://i.pravatar.cc/150?img=2', '2024-01-20', 1, 0),
+('Mike', 'Johnson', 'mike.j@example.com', 'Full-stack developer and open source contributor', 'mikej', 'password123', 'https://i.pravatar.cc/150?img=3', '2024-02-01', 1, 0),
+('Sarah', 'Williams', 'sarah.w@example.com', 'UX designer who loves writing about design', 'sarahw', 'password123', 'https://i.pravatar.cc/150?img=4', '2024-02-10', 1, 1),
+('Robert', 'Anderson', 'admin@example.com', 'Site administrator', 'robert', 'password123', 'https://i.pravatar.cc/150?img=5', '2024-01-01', 1, 1);
 
 -- Seed Categories
 INSERT INTO "Categories" (label) VALUES

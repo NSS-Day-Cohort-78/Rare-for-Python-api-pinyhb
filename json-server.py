@@ -14,6 +14,7 @@ from views import (
     get_subscription_by_follower,
     unsubscribe_to_user,
     resubscribe_to_user,
+    update_user_type,
 )
 from views import (
     get_categories,
@@ -300,6 +301,17 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "resubscribe":
             if pk > 0:
                 successfully_updated = resubscribe_to_user(pk)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Tag not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+        if url["requested_resource"] == "users":
+            if pk > 0:
+                successfully_updated = update_user_type(pk, request_body)
                 if successfully_updated:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
