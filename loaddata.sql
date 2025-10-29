@@ -203,6 +203,3 @@ INSERT INTO "DemotionQueue" (action, admin_id, approver_one_id) VALUES
 ('demote_user_3', 5, 1),
 ('remove_post_6', 5, 2);
 
- SELECT * FROM Subscriptions
- WHERE follower_id = 1 AND author_id = 2
- 
