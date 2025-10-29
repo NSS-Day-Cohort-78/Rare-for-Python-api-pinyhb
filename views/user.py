@@ -247,3 +247,24 @@ def update_user_type(pk, body):
         row_affected = cursor.rowcount
 
     return True if row_affected > 0 else False
+
+
+def activate_user(pk, body):
+    """update a user type"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            UPDATE Users
+            SET
+                active = ?
+            WHERE id =?
+            """,
+            (body["active"], pk),
+        )
+
+        row_affected = cursor.rowcount
+
+    return True if row_affected > 0 else False
