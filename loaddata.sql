@@ -1,6 +1,7 @@
 -- RUN THIS BLOCK TO DELETE ALL
 DELETE FROM Users;
 DELETE FROM DemotionQueue;
+DELETE FROM DeactivationQueue;
 DELETE FROM Subscriptions;
 DELETE FROM Posts;
 DELETE FROM Comments;
@@ -12,6 +13,7 @@ DELETE FROM Categories;
 
 DROP TABLE IF EXISTS Users;
 DROP TABLE IF EXISTS DemotionQueue;
+DROP TABLE IF EXISTS DeactivationQueue;
 DROP TABLE IF EXISTS Subscriptions;
 DROP TABLE IF EXISTS Posts;
 DROP TABLE IF EXISTS Comments;
@@ -41,12 +43,23 @@ CREATE TABLE "Users" (
 );
 
 CREATE TABLE "DemotionQueue" (
-  "action" varchar,
+  'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+  'user_id' INTEGER,
   "admin_id" INTEGER,
   "approver_one_id" INTEGER,
   FOREIGN KEY(`admin_id`) REFERENCES `Users`(`id`),
   FOREIGN KEY(`approver_one_id`) REFERENCES `Users`(`id`),
-  PRIMARY KEY (action, admin_id, approver_one_id)
+  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
+);
+
+CREATE TABLE "DeactivationQueue"(
+  'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+  'user_id' INTEGER,
+  "admin_id" INTEGER,
+  "approver_one_id" INTEGER,
+  FOREIGN KEY(`admin_id`) REFERENCES `Users`(`id`),
+  FOREIGN KEY(`approver_one_id`) REFERENCES `Users`(`id`),
+  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
 );
 
 
@@ -200,10 +213,10 @@ INSERT INTO "PostReactions" (user_id, reaction_id, post_id) VALUES
 (2, 3, 5), (4, 5, 5);
 
 -- Seed DemotionQueue (example of pending admin actions)
-INSERT INTO "DemotionQueue" (action, admin_id, approver_one_id) VALUES
-('demote_user_3', 5, 1),
-('remove_post_6', 5, 2);
+INSERT INTO "DemotionQueue" (user_id, admin_id, approver_one_id) VALUES
+(1, 5, NULL),
+(2, 5, NULL);
 
-UPDATE Users
-SET active = false
-WHERE id = 1
+SELECT * FROM DemotionQueue
+WHERE user_id = 2 
+

@@ -49,6 +49,7 @@ from views import (
     delete_post_tag,
 )
 from views import get_all_post_tags
+from views import get_demotion_by_user, update_demotion
 
 
 class Json_Server(HandleRequests):
@@ -127,6 +128,15 @@ class Json_Server(HandleRequests):
             else:
                 request = get_all_subscriptions()
                 return self.response(request, status.HTTP_200_SUCCESS.value)
+        if response["requested_resource"] == "demotion":
+            if pk > 0:
+                try:
+                    request = get_demotion_by_user(pk)
+                    return self.response(request, status.HTTP_200_SUCCESS.value)
+                except Exception:
+                    return self.response(
+                        "", status.HTTP_400_CLIENT_ERROR_BAD_REQUEST_DATA.value
+                    )
 
     def do_POST(self):
         url = self.parse_url(self.path)
@@ -336,6 +346,17 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "activate-user":
             if pk > 0:
                 successfully_updated = activate_user(pk, request_body)
+                if successfully_updated:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+                return self.response(
+                    json.dumps({"error": "Tag not found"}),
+                    status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value,
+                )
+        if url["requested_resource"] == "demotion":
+            if pk > 0:
+                successfully_updated = update_demotion(pk, request_body)
                 if successfully_updated:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
