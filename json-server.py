@@ -218,7 +218,7 @@ class Json_Server(HandleRequests):
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
                     )
                 self.response("", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value)
-                
+
         if url["requested_resource"] == "post-tags":
             if pk > 0:
                 response = delete_post_tag(pk)
