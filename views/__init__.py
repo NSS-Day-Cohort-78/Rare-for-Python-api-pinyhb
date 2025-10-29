@@ -18,6 +18,7 @@ from .user import (
     unsubscribe_to_user,
     resubscribe_to_user,
     update_user_type,
+    activate_user,
 )
 from .categories import (
     get_categories,
