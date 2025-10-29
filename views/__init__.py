@@ -27,4 +27,5 @@ from .tags import (
     delete_tag,
     create_tag,
     get_post_tags,
+    delete_post_tag
 )
