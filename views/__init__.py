@@ -1,5 +1,22 @@
-from .posts import get_posts, get_post_by_id, delete_post, update_post, create_post, get_posts_by_tag
-from .user import create_user, login_user, get_user, get_all_users, add_new_subscription, get_all_subscriptions
+from .posts import (
+    get_posts,
+    get_post_by_id,
+    delete_post,
+    update_post,
+    create_post,
+    get_posts_by_tag,
+)
+from .user import (
+    create_user,
+    login_user,
+    get_user,
+    get_all_users,
+    add_new_subscription,
+    get_all_subscriptions,
+    get_subscription_by_follower,
+    unsubscribe_to_user,
+    resubscribe_to_user,
+)
 from .categories import (
     get_categories,
     create_category,
