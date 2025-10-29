@@ -204,8 +204,3 @@ INSERT INTO "DemotionQueue" (action, admin_id, approver_one_id) VALUES
 ('demote_user_3', 5, 1),
 ('remove_post_6', 5, 2);
 
-SELECT *, COUNT(*) AS subscribers FROM Users u
-                LEFT JOIN Subscriptions s
-                ON u.id = s.author_id
-                WHERE u.id = 5
- 
