@@ -37,6 +37,7 @@ from views import (
     get_all_reactions,
     create_post_reaction,
     update_approval,
+    delete_post_reaction,
 )
 from views import (
     get_all_tags,
@@ -172,6 +173,8 @@ class Json_Server(HandleRequests):
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "post-reaction":
             response = create_post_reaction(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "tags":
             response = create_tag(request_body)
             if response:
@@ -256,6 +259,13 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "demotion":
             if pk > 0:
                 response = delete_demotion(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+        if url["requested_resource"] == "post-reaction":
+            if pk > 0:
+                response = delete_post_reaction(pk)
                 if response:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value

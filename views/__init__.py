@@ -39,6 +39,7 @@ from .reactions import (
     create_reaction,
     get_all_reactions,
     create_post_reaction,
+    delete_post_reaction,
 )
 from .tags import (
     get_all_tags,

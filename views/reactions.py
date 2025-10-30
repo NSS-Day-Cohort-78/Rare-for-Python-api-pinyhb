@@ -96,6 +96,7 @@ def create_reaction(body):
 
     return True if added > 0 else False
 
+
 def create_post_reaction(body):
     """Save reactions to a post"""
     with sqlite3.connect(db) as conn:
@@ -106,9 +107,27 @@ def create_post_reaction(body):
             INSERT INTO PostReactions (user_id, reaction_id, post_id)
             VALUES (?, ?, ?)
             """,
-            (body["user_id"], body["reaction_id"], body["post_id"])
+            (body["user_id"], body["reaction_id"], body["post_id"]),
         )
 
         added = cursor.rowcount
 
     return True if added > 0 else False
+
+
+def delete_post_reaction(pk):
+    """delete a post reaction"""
+    with sqlite3.connect(db) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM PostReactions
+            WHERE id = ?
+            """,
+            (pk,),
+        )
+
+        deleted = cursor.rowcount
+
+    return True if deleted > 0 else False
