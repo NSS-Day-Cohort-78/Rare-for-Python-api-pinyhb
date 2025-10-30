@@ -53,4 +53,9 @@ from .tags import (
 
 from .post_tags import get_all_post_tags
 
-from .demotion import get_demotion_by_user, update_demotion
+from .demotion import (
+    get_demotion_by_user,
+    update_demotion,
+    add_demotion,
+    delete_demotion,
+)
