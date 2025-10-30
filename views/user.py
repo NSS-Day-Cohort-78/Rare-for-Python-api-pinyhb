@@ -24,6 +24,7 @@ def login_user(user):
             from Users
             where username = ?
             and password = ?
+            and active = 1
         """,
             (user["username"], user["password"]),
         )
