@@ -49,7 +49,7 @@ from views import (
     delete_post_tag,
 )
 from views import get_all_post_tags
-from views import get_demotion_by_user, update_demotion
+from views import get_demotion_by_user, update_demotion, add_demotion, delete_demotion
 
 
 class Json_Server(HandleRequests):
@@ -182,6 +182,10 @@ class Json_Server(HandleRequests):
             response = add_new_subscription(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "demotion":
+            response = add_demotion(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         else:
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
@@ -235,6 +239,13 @@ class Json_Server(HandleRequests):
         if url["requested_resource"] == "post-tags":
             if pk > 0:
                 response = delete_post_tag(pk)
+                if response:
+                    return self.response(
+                        "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
+                    )
+        if url["requested_resource"] == "demotion":
+            if pk > 0:
+                response = delete_demotion(pk)
                 if response:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value

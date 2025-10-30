@@ -213,10 +213,8 @@ INSERT INTO "PostReactions" (user_id, reaction_id, post_id) VALUES
 (2, 3, 5), (4, 5, 5);
 
 -- Seed DemotionQueue (example of pending admin actions)
-INSERT INTO "DemotionQueue" (user_id, admin_id, approver_one_id) VALUES
-(1, 5, NULL),
-(2, 5, NULL);
+
 
 SELECT * FROM DemotionQueue
-WHERE user_id = 2 
+
 
