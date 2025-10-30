@@ -59,3 +59,5 @@ from .demotion import (
     add_demotion,
     delete_demotion,
 )
+
+from .deactivation import deactivate_user

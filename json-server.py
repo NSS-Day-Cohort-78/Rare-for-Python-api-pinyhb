@@ -50,6 +50,7 @@ from views import (
 )
 from views import get_all_post_tags
 from views import get_demotion_by_user, update_demotion, add_demotion, delete_demotion
+from views import deactivate_user
 
 
 class Json_Server(HandleRequests):
@@ -140,6 +141,7 @@ class Json_Server(HandleRequests):
 
     def do_POST(self):
         url = self.parse_url(self.path)
+        pk = url["pk"]
 
         content_len = int(self.headers.get("content-length", 0))
         request_body = self.rfile.read(content_len)
@@ -186,6 +188,14 @@ class Json_Server(HandleRequests):
             response = add_demotion(request_body)
             if response:
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+        elif url["requested_resource"] == "deactivate-user":
+            response = deactivate_user(pk, request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
+            return self.response(
+                "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+            )
+
         else:
             return self.response(
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
