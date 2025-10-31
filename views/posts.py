@@ -181,7 +181,7 @@ def create_post(post):
 
         db_cursor.execute(
             """
-        INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (?, ?, ?, ?, ?, ?, 1)
+        INSERT INTO Posts (user_id, category_id, title, publication_date, image_url, content, approved) VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 post["user_id"],
@@ -190,6 +190,7 @@ def create_post(post):
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 post["image_url"],
                 post["content"],
+                post["approved"]
             ),
         )
 
