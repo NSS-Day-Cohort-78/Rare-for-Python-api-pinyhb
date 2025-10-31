@@ -14,7 +14,7 @@ from views import (
     get_subscription_by_follower,
     unsubscribe_to_user,
     resubscribe_to_user,
-    update_user_type,
+    update_user_info,
     activate_user,
 )
 from views import (
@@ -354,7 +354,7 @@ class Json_Server(HandleRequests):
                 )
         if url["requested_resource"] == "users":
             if pk > 0:
-                successfully_updated = update_user_type(pk, request_body)
+                successfully_updated = update_user_info(pk, request_body)
                 if successfully_updated:
                     return self.response(
                         "", status.HTTP_204_SUCCESS_NO_RESPONSE_BODY.value
