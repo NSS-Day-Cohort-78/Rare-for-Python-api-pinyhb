@@ -17,7 +17,7 @@ from .user import (
     get_subscription_by_follower,
     unsubscribe_to_user,
     resubscribe_to_user,
-    update_user_type,
+    update_user_info,
     activate_user,
 )
 from .categories import (

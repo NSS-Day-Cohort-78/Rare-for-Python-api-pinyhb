@@ -229,21 +229,34 @@ def resubscribe_to_user(pk):
     return True if row_affected > 0 else False
 
 
-def update_user_type(pk, body):
+def update_user_info(pk, body):
     """update a user type"""
     with sqlite3.connect("./db.sqlite3") as conn:
 
         cursor = conn.cursor()
 
-        cursor.execute(
-            """
-            UPDATE Users
-            SET
-                admin = ?
-            WHERE id =?
-            """,
-            (body["admin"], pk),
-        )
+        if "admin" in body:
+
+            cursor.execute(
+                """
+                UPDATE Users
+                SET
+                    admin = ?
+                WHERE id =?
+                """,
+                (body["admin"], pk),
+            )
+
+        if "profile_image_url" in body:
+            cursor.execute(
+                """
+                UPDATE Users
+                SET
+                    profile_image_url = ?
+                WHERE id =?
+                """,
+                (body["profile_image_url"], pk),
+            )
 
         row_affected = cursor.rowcount
 
