@@ -158,6 +158,8 @@ class Json_Server(HandleRequests):
                 return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "post-reaction":
             response = create_post_reaction(request_body)
+            if response:
+                return self.response("", status.HTTP_201_SUCCESS_CREATED.value)
         elif url["requested_resource"] == "tags":
             response = create_tag(request_body)
             if response:
